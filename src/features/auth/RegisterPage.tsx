@@ -10,7 +10,7 @@ export default function RegisterPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     await doRegister(values.email, values.password, values.name)
-    nav('/app')
+    nav('/app/dashboard')
   })
 
   return (

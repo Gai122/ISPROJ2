@@ -121,6 +121,7 @@ export default function TripDetail() {
                     secondary={<>
                       {it.description && <Typography component="span" display="block" color="text.primary">{it.description}</Typography>}
                       {it.location && <Typography component="span" display="block" color="text.secondary">Location: {it.location}</Typography>}
+                      {it.transportMode && <Typography component="span" display="block" color="text.secondary">Transport: {String(it.transportMode).toUpperCase()}</Typography>}
                       {(it.startTime || it.endTime) && <Typography component="span" display="block" color="text.secondary">Time: {it.startTime || '—'} {it.endTime ? `— ${it.endTime}` : ''}</Typography>}
                     </>}
                   />

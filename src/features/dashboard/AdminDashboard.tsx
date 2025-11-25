@@ -3,9 +3,19 @@ import { Container, Typography, Grid, Paper, Box, Table, TableHead, TableRow, Ta
 import { useAllBookings } from '../bookings/hooks'
 import { Link } from 'react-router-dom'
 import AdminTrips from '../trips/admin/AdminTrips'
+import { useTrips } from '../trips/hooks'
 
 export default function AdminDashboard() {
   const { data: bookings, isLoading: bookingsLoading } = useAllBookings()
+  const { data: trips } = useTrips()
+
+  const tripTitleById = useMemo(() => {
+    const map: Record<string, string> = {}
+    ;(trips || []).forEach((t: any) => {
+      map[t.$id] = t.title || t.name || t.$id
+    })
+    return map
+  }, [trips])
 
   const totalBookings = bookings?.length ?? 0
   const revenue = useMemo(() => (bookings || []).reduce((s: number, b: any) => s + (Number(b.totalPrice || 0)), 0), [bookings])
@@ -41,7 +51,9 @@ export default function AdminDashboard() {
               {recent.map((b: any) => (
                 <TableRow key={b.$id}>
                   <TableCell>{b.$id}</TableCell>
-                  <TableCell><Link to={`/admin/trips/${b.tripId}`}>{b.tripId}</Link></TableCell>
+                  <TableCell>
+                    <Link to={`/admin/trips/${b.tripId}`}>{tripTitleById[b.tripId] || b.tripTitle || b.tripName || b.tripId}</Link>
+                  </TableCell>
                   <TableCell>{b.userId}</TableCell>
                   <TableCell>{b.passengers}</TableCell>
                   <TableCell>{b.totalPrice}</TableCell>

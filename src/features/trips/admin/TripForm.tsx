@@ -49,9 +49,8 @@ export default function TripForm({ initial, onSave, onCancel }: any) {
         }
       })
 
-      // If trip transportMode should reflect the first itinerary's transport mode, set it
-      const tripLevelTransport = cleanedItineraries.length > 0 ? cleanedItineraries[0].transportMode : restPayload.transportMode
-      const cleaned = { ...restPayload, transportMode: tripLevelTransport, itineraries: cleanedItineraries }
+      // Preserve trip-level transportMode as chosen in the form (do not override from itineraries)
+      const cleaned = { ...restPayload, transportMode: restPayload.transportMode || 'land', itineraries: cleanedItineraries }
 
       await onSave(cleaned)
     } finally {
@@ -97,6 +96,22 @@ export default function TripForm({ initial, onSave, onCancel }: any) {
           <TextField label="Start date" type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} InputLabelProps={{ shrink: true }} />
           <TextField label="End date" type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} InputLabelProps={{ shrink: true }} />
         </Stack>
+
+        {/* Trip-level transport mode selector */}
+        <FormControl fullWidth>
+          <InputLabel id="trip-transport-label">Transport Mode</InputLabel>
+          <Select
+            labelId="trip-transport-label"
+            value={form.transportMode || 'land'}
+            label="Transport Mode"
+            onChange={(e) => setForm({ ...form, transportMode: e.target.value })}
+            size="small"
+          >
+            <MenuItem value="land">Land</MenuItem>
+            <MenuItem value="sea">Sea</MenuItem>
+            <MenuItem value="air">Air</MenuItem>
+          </Select>
+        </FormControl>
 
         <div>
           <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />

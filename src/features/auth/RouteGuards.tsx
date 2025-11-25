@@ -17,6 +17,6 @@ export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }
 
   if (loading) return null
   if (!user) return <Navigate to={`/login?redirectTo=${encodeURIComponent(location.pathname + location.search)}`} replace />
-  if (!isAdmin) return <Navigate to="/app" replace />
+  if (!isAdmin) return <Navigate to="/app/dashboard" replace />
   return <>{children}</>
 }

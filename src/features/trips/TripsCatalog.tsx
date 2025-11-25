@@ -30,7 +30,9 @@ export default function TripsCatalog() {
               <CardContent>
                 <Typography variant="h6">{t.title}</Typography>
                 <Typography variant="body2" color="text.secondary" noWrap>{t.description}</Typography>
-                <Typography variant="subtitle2" sx={{ mt: 1 }}>{t.transportMode.toUpperCase()} • {t.currency} {t.price.toFixed(2)}</Typography>
+                <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                  Transport: {(((t as any).transportMode || (t as any).itineraries?.[0]?.transportMode || 'N/A') + '').toUpperCase()} • {t.currency} {t.price.toFixed(2)}
+                </Typography>
               </CardContent>
               <CardActions>
                 <Button component={Link} to={`/trips/${t.$id}`}>View</Button>

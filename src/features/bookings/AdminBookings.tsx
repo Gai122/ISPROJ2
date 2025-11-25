@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Container, Typography, Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuItem } from '@mui/material'
 import { useAllBookings, useUpdateBooking } from './hooks'
+import { useTrips } from '../trips/hooks'
 
 export default function AdminBookings() {
   const { data: bookings, isLoading } = useAllBookings()
   const update = useUpdateBooking()
+  const { data: trips } = useTrips()
+
+  const tripTitleById = useMemo(() => {
+    const map: Record<string, string> = {}
+    ;(trips || []).forEach((t: any) => {
+      map[t.$id] = t.title || t.name || t.$id
+    })
+    return map
+  }, [trips])
 
   if (isLoading) return <Container sx={{ py: 4 }}>Loading…</Container>
 
@@ -40,7 +50,7 @@ export default function AdminBookings() {
             {bookings.map((b: any) => (
               <TableRow key={b.$id}>
                 <TableCell>{b.$id}</TableCell>
-                <TableCell>{b.tripId}</TableCell>
+                <TableCell>{tripTitleById[b.tripId] || b.tripTitle || b.tripName || b.tripId}</TableCell>
                 <TableCell>{b.userId}</TableCell>
                 <TableCell>{b.passengers}</TableCell>
                 <TableCell>{b.totalPrice}</TableCell>

@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Account, Teams } from 'appwrite'
+git remote add origin https://github.com/Gai122/ISPROJ2.gitimport { Client, Databases, ID, Account, Teams } from 'appwrite'
 import 'dotenv/config'
 
 const endpoint = process.env.VITE_APPWRITE_ENDPOINT!

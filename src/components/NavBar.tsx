@@ -25,7 +25,7 @@ export default function NavBar() {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }} component={RouterLink} to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          Travel Agency
+          Book2Trip
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -40,7 +40,9 @@ export default function NavBar() {
 
           {user ? (
             <>
-              <Button color="inherit" component={RouterLink} to={isAdmin ? '/admin' : '/app'}>{isAdmin ? 'Admin' : 'My App'}</Button>
+              {isAdmin && (
+                <Button color="inherit" component={RouterLink} to="/admin">Admin</Button>
+              )}
               <Button color="inherit" component={RouterLink} to={isAdmin ? '/admin/bookings' : '/app/dashboard'}>{isAdmin ? 'Bookings' : 'My Bookings'}</Button>
               <Button color="inherit" onClick={handleLogout}>Logout</Button>
             </>

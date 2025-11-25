@@ -4,6 +4,7 @@ import { ID, Query } from 'appwrite'
 export type BookingPayload = {
   tripId: string
   userId: string
+  userEmail?: string
   passengers: number
   totalPrice: number
   status?: 'pending' | 'confirmed' | 'cancelled'
@@ -90,6 +91,15 @@ export async function createBooking(payload: BookingPayload) {
       {
         ...payload,
         userId: ownerId, // enforce owner as the authenticated user
+        // capture auth identifiers for admin views
+        userEmail: (currentUser as any)?.email || undefined,
+        userPhone: (currentUser as any)?.phone || undefined,
+        userName: (currentUser as any)?.name || undefined,
+        userIdentifier:
+          (currentUser as any)?.email ||
+          (currentUser as any)?.phone ||
+          (currentUser as any)?.name ||
+          ownerId,
         status: payload.status ?? 'pending',
         paymentStatus: payload.paymentStatus ?? 'unpaid',
         bookedAt: new Date().toISOString(),

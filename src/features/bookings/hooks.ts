@@ -11,9 +11,49 @@ export function useAllBookings() {
 
 export function useUpdateBooking() {
   const qc = useQueryClient()
-  return useMutation<any, Error, { id: string; patch: any }, unknown>({
+  return useMutation<any, Error, { id: string; patch: any }, { snapshots?: any[] }>({
     mutationFn: (payload: { id: string; patch: any }) => api.updateBooking(payload.id, payload.patch),
-    onSuccess: () => {
+    onMutate: async ({ id, patch }) => {
+      // Cancel relevant queries to avoid race conditions
+      await qc.cancelQueries({ queryKey: ['bookings'] })
+
+      // Take snapshots of all bookings-related caches to allow rollback
+      const snapshots = qc.getQueriesData({ queryKey: ['bookings'] }).map(([key, data]) => [key, data])
+
+      // Helper to apply patch to a list of bookings
+      const applyPatch = (list: any) => {
+        if (!Array.isArray(list)) return list
+        return list.map((b: any) => (b && b.$id === id ? { ...b, ...patch } : b))
+      }
+
+      // Update all matching bookings caches optimistically
+      const queries = qc.getQueriesData({ queryKey: ['bookings'] })
+      queries.forEach(([key, data]) => {
+        qc.setQueryData(key as any, applyPatch(data as any))
+      })
+
+      return { snapshots }
+    },
+    onError: (_err, _vars, ctx) => {
+      // Rollback caches from snapshots on error
+      if (ctx?.snapshots) {
+        ctx.snapshots.forEach(([key, data]: any) => qc.setQueryData(key as any, data))
+      }
+    },
+    onSuccess: (updatedDoc) => {
+      // Merge the server-updated document into all bookings caches to prevent UI reversion/flicker
+      const updatedId = updatedDoc?.$id
+      const merge = (list: any) => {
+        if (!Array.isArray(list)) return list
+        return list.map((b: any) => (b && b.$id === updatedId ? { ...b, ...updatedDoc } : b))
+      }
+      const queries = qc.getQueriesData({ queryKey: ['bookings'] })
+      queries.forEach(([key, data]) => {
+        qc.setQueryData(key as any, merge(data as any))
+      })
+    },
+    onSettled: () => {
+      // Ensure final data is fetched from server
       qc.invalidateQueries({ queryKey: ['bookings'] })
       qc.invalidateQueries({ queryKey: ['bookings', 'all'] })
       qc.invalidateQueries({ queryKey: ['bookings', 'user'] })

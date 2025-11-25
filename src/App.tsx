@@ -4,7 +4,6 @@ import LoginPage from './features/auth/LoginPage'
 import RegisterPage from './features/auth/RegisterPage'
 import TripsCatalog from './features/trips/TripsCatalog'
 import TripDetail from './features/trips/TripDetail'
-import ClientHome from './features/dashboard/ClientHome'
 import ClientDashboard from './features/dashboard/ClientDashboard'
 import BookingDetail from './features/bookings/BookingDetail'
 import AdminDashboard from './features/dashboard/AdminDashboard'
@@ -35,7 +34,7 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<ClientHome />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ClientDashboard />} />
           <Route path="bookings/:bookingId" element={<BookingDetail />} />
         </Route>

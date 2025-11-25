@@ -9,7 +9,7 @@ export default function LoginPage() {
   const { login, isAdmin } = useAuth()
   const nav = useNavigate()
   const location = useLocation()
-  const redirectTo = new URLSearchParams(location.search).get('redirectTo') || '/app'
+  const redirectTo = new URLSearchParams(location.search).get('redirectTo') || '/app/dashboard'
 
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
