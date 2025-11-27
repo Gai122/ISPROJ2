@@ -21,7 +21,6 @@ function sanitizeTripObject(obj: any) {
   if (!obj || typeof obj !== 'object') return obj
   // remove top-level forbidden fields and any $-prefixed fields
   return deepSanitize(obj)
-}
 
 function sanitizeItineraryObject(obj: any) {
   // produce a shallow-cleaned plus deep-sanitized copy without id fields
